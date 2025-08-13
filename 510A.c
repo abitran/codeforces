@@ -1,37 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-int main(int argc, char **argv) {
+void solve();
+
+int main(int argc, char *argv[]) {
+  solve();
+  return EXIT_SUCCESS;
+}
+
+void solve() {
   int n, m;
-  scanf("%d%d", &n, &m);
-  char draw[n][m];
-  memset(draw, '.', sizeof(draw));
-  unsigned int end = 1;
+  scanf("%d %d", &n, &m);
+  char grid[n][m];
 
-  for (int i = 0; i < n; i++) {
-    if (i % 2 == 0) {
-      for (int j = 0; j < m; j++) {
-        draw[i][j] = '#';
+  for (int r = 0; r < n; r++) 
+    for (int c = 0; c < m; c++) 
+      grid[r][c] = '.';
+  
+  for (int r = 0; r < n; r++) {
+    if (r % 4 == 0 || r % 4 == 2) {
+      for (int c = 0; c < m; c++) {
+        grid[r][c] = '#';
       }
-    } else {
-      for (int j = 0; j < m; j++) {
-        if (j == m - 1 && end) {
-          draw[i][j] = '#';
-          end = 0;
-        } else if (j == 0 && !end) {
-          draw[i][j] = '#';
-          end = 1;
-        }
-      }
-    }
+    } else if (r % 4 == 1)
+      grid[r][m - 1] = '#';
+
+    else if (r % 4 == 3)
+      grid[r][0] = '#';
   }
 
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++)
-      printf("%c", draw[i][j]);
+  for (int r = 0; r < n; r++) {
+    for (int c = 0; c < m; c++) {
+      printf("%c", grid[r][c]);
+    }
     printf("\n");
   }
-
-  return EXIT_SUCCESS;
 }

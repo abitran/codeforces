@@ -1,23 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MIN(X,Y) (X)<(Y)?(X):(Y)
-
 int main(int argc, char **argv) {
 
   int t;
-  int naddends = 0;
-  int n;
+  int a, b, c;
   scanf("%d", &t);
   while (t--){
-    scanf("%d", &n);
-    
+    scanf("%d%d%d", &a, &b, &c);
+    printf("%c\n", a + b == c ? '+' : '-');
 
-    
-    
-    
   }
-  
 
 
   return EXIT_SUCCESS;

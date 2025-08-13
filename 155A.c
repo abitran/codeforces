@@ -1,37 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <limits.h>
 
 int main(int argc, char **argv) {
 
   int n;
   scanf("%d", &n);
-  int history[n];
-  memset(history, 0, sizeof(history));
-
-  int min = INT_MAX;
-  int max = 0;
+  int table[n];
   int amaze = 0;
-
   for (int i = 0; i < n; i++)
-    scanf("%d", &history[i]);
+    scanf("%d", &table[i]);
 
+  int min = table[0];
+  int max = table[0];
   for (int i = 1; i < n; i++) {
-    if ((history[i] > history[i-1]) && history[i] > max){
+    if (table[i] < min) {
       amaze++;
-      max = history[i];
-      if (history[i-1] < min)
-        min = history[i-1];
+      min = table[i];
     }
-
-    else if ((history[i] < history[i-1]) && history[i] < min){
+    if (table[i] > max) {
       amaze++;
-      min = history[i];
+      max = table[i];
     }
+    
   }
-
-
 
   printf("%d\n", amaze);
 
