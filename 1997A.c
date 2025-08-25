@@ -7,7 +7,7 @@
 
 void solve();
 
-char random_char();
+char random_not(char);
 
 int main(int argc, char *argv[]) {
   int t;
@@ -23,21 +23,19 @@ void solve() {
   scanf("%s", s);
   size_t slen = strlen(s);
   if (slen == 1) {
-    char c;
-    while ((c = random_char()) != s[0]) {
-      printf("%c%s\n", c, s);
-      return;
-    }
+    char c = random_not(s[0]);
+    printf("%c%s\n", c, s);
+    return;
   }
 
-  int dd = 1;
+  int i = 0;
 
-  for (int i = 0; i < slen; i++) {
+  for (; i < slen; i++) {
+    char curr = s[i];
     char next = s[i + 1];
-    if (s[i] == next) {
-      dd = 0;
-      char c = random_char();
-      printf("%c", s[i]);
+    if (curr == next) {
+      printf("%c", curr);
+      char c = random_not(curr);
       printf("%c", c);
       printf("%c", next);
       for (int j = i + 2; j < slen; j++) {
@@ -45,16 +43,20 @@ void solve() {
       }
       printf("\n");
       return;
-    } else if (dd) {
+    } else
       printf("%c", s[i]);
-      return;
-    }
   }
+  char c = random_not(s[slen - 1]);
 
-  printf("\n");
+  printf("%c\n", c);
+  return;
 }
 
-char random_char() {
-  char r_char = 'a' + (rand() % 26);
+char random_not(char ch) {
+  char r_char;
+  do {
+    r_char = 'a' + (rand() % 26);
+  } while (ch == r_char);
+
   return r_char;
 }
