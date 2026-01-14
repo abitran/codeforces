@@ -13,28 +13,30 @@ int main(int argc, char *argv[]) {
 
 void solve() {
   int n;
-  int an;
-  scanf("%d", &an);
-  int moves = 0;
+  scanf("%d", &n);
+  int a[n];
   int sum = 0;
-  for (int i = 0; i < n; i++)
-    sum += an;
+  int cnt1 = 0;
+  for (int i = 0; i < n; i++) {
+    scanf("%d", &a[i]);
+    sum += a[i];
+    a[i] % 3 == 1 ? cnt1++ : cnt1;
+  }
 
-  if (sum % 3 == 0) {
-    printf("%d\n", moves);
+  int rem = sum % 3;
+
+  if (rem == 0) {
+    puts("0");
     return;
   }
 
-  int cnt_mod1 = 0, cnt_mod2 = 0;
+  if (rem == 2) {
+    puts("1");
+    return;
+  }
 
-  if (sum % 3 == 1 || sum % 3 == 2) {
-    while (1) {
-      sum--;
-      moves++;
-      if (sum % 3 == 0) {
-        printf("%d\n", moves);
-        return;
-      }
-    }
+  if (rem == 1) {
+    puts(cnt1 > 0 ? "1" : "2");
+    return;
   }
 }

@@ -6,10 +6,30 @@
 #define MAX_WORD_LEN 4
 #define NUM_PLAYERS 3
 
-typedef struct Player {
+typedef struct {
   int points;
   char word[MAX_WORDS][MAX_WORD_LEN];
 } Player;
+
+typedef struct {
+  char *key;
+  int value;
+} Entry;
+
+typedef struct {
+  Entry *entries;
+  size_t size;
+  size_t count;
+} HashTable;
+
+unsigned long hash(const char *);
+
+HashTable *ht_create(size_t);
+void ht_insert(HashTable *, const char *, int);
+int ht_get(HashTable *, const char *);
+void ht_free(HashTable *);
+
+int is_word_present(char *, char[][MAX_WORD_LEN], int);
 
 void solve();
 
@@ -26,52 +46,75 @@ void solve() {
   int n;
   scanf("%d", &n);
 
-  char **wordlist = malloc(sizeof(char *) * NUM_PLAYERS * n);
-  int total_words = 0;
-
   for (int i = 0; i < NUM_PLAYERS; i++) {
     players[i].points = 0;
-    for (int j = 0; j < n; j++) {
-      scanf("%3s", players[i].word[j]);
-      wordlist[total_words] = malloc(MAX_WORD_LEN);
-      strcpy(wordlist[total_words], players[i].word[j]);
-      total_words++;
-    }
+    for (int j = 0; j < n; j++)
+      scanf("%s", players[i].word[j]);
   }
 
-  int wordfreq[NUM_PLAYERS * n];
-  memset(wordfreq, 0, sizeof(int) * NUM_PLAYERS * n);
+  HashTable *freq = ht_create(4096);
 
-  for (int i = 0; i < total_words; i++) {
-    for (int j = 0; j < total_words; j++) {
-      if (i != j && strcmp(wordlist[i], wordlist[j]) == 0) {
-        wordfreq[i]++;
-      }
-    }
+  for (int i = 0; i < NUM_PLAYERS; i++) {
+    for (int j = 0; j < n; j++)
+      ht_insert(freq, players[i].word[j], 1);
   }
 
   for (int i = 0; i < NUM_PLAYERS; i++) {
     for (int j = 0; j < n; j++) {
-      for (int k = 0; k < total_words; k++) {
-        if (strcmp(players[i].word[j], wordlist[k]) == 0) {
-          int freq = wordfreq[k] + 1;
-          if (freq == 1)
-            players[i].points += 3;
-          else if (freq == 2)
-            players[i].points += 1;
-          break;
-        }
-      }
+      int count = ht_get(freq, players[i].word[j]);
+      if (count == 1)
+        players[i].points += 3;
+      else if (count == 2)
+        players[i].points += 1;
     }
   }
 
-  for (int i = 0; i < NUM_PLAYERS; i++)
-    printf("%d ", players[i].points);
-  printf("\n");
+  printf("%d %d %d\n", players[0].points, players[1].points, players[2].points);
+}
 
-  for (int i = 0; i < total_words; i++) {
-    free(wordlist[i]);
+unsigned long hash(const char *s) {
+  unsigned long h = 5381;
+  int c;
+  while ((c = *s++))
+    h = ((h << 5) + h) + c;
+  return h;
+}
+
+HashTable *ht_create(size_t size) {
+  HashTable *ht = malloc(sizeof(HashTable));
+  ht->size = size;
+  ht->count = 0;
+  ht->entries = calloc(size, sizeof(Entry));
+  return ht;
+}
+
+void ht_insert(HashTable *ht, const char *key, int value) {
+  unsigned long index = hash(key) % ht->size;
+  while (ht->entries[index].key && strcmp(ht->entries[index].key, key) != 0)
+    index = (index + 1) % ht->size;
+  if (!ht->entries[index].key) {
+    ht->entries[index].key = strdup(key);
+    ht->entries[index].value = value;
+    ht->count++;
+  } else {
+    ht->entries[index].value += value;
   }
+}
 
-  free(wordlist);
+int ht_get(HashTable *ht, const char *key) {
+  unsigned long index = hash(key) % ht->size;
+  while (ht->entries[index].key) {
+    if (strcmp(ht->entries[index].key, key) == 0)
+      return ht->entries[index].value;
+    index = (index + 1) % ht->size;
+  }
+  return 0;
+}
+
+void ht_free(HashTable *ht) {
+  for (size_t i = 0; i < ht->size; i++) {
+    free(ht->entries[i].key);
+  }
+  free(ht->entries);
+  free(ht);
 }

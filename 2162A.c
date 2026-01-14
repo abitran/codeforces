@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
-#define MIN(x, y) ((x) < (y) ? (x) : (y))
 
 void solve();
 
@@ -15,12 +14,14 @@ int main(int argc, char *argv[]) {
 }
 
 void solve() {
-  int n, s;
-  scanf("%d %d", &n, &s);
-  int x[n];
+  int n;
+  scanf("%d", &n);
+  int a[n];
+  int maxavg = -1;
   for (int i = 0; i < n; i++) {
-    scanf("%d", &x[i]);
+    scanf("%d", &a[i]);
+    maxavg = MAX(maxavg, a[i]);
   }
-  int result = MIN(abs(s - x[0]), abs(s - x[n - 1])) + x[n - 1] - x[0];
-  printf("%d\n", result);
+
+  printf("%d\n", maxavg);
 }

@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX(x, y) ((x) > (y) ? (x) : (y))
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
 
 void solve();
@@ -15,12 +14,20 @@ int main(int argc, char *argv[]) {
 }
 
 void solve() {
-  int n, s;
-  scanf("%d %d", &n, &s);
-  int x[n];
+  int n;
+  scanf("%d", &n);
+  int a[n];
+  int min = 9e8;
   for (int i = 0; i < n; i++) {
-    scanf("%d", &x[i]);
+    scanf("%d", &a[i]);
+    min = MIN(min, a[i]);
   }
-  int result = MIN(abs(s - x[0]), abs(s - x[n - 1])) + x[n - 1] - x[0];
-  printf("%d\n", result);
+
+  int cmin = 0;
+
+  for (int i = 0; i < n; i++)
+    if (a[i] == min)
+      cmin++;
+
+  printf("%d\n", n - cmin);
 }
